@@ -204,8 +204,8 @@ func UnlockPolicy(cert Certificate, policy Policy) PrivKey {
 }
 
 func main() {
-  isEmailAdmin := Condition{Name: "email", Value: "admin@foo.com"}
-  isEmailAdminHash := isEmailAdmin.Hash()
+	isEmailAdmin := Condition{Name: "email", Value: "admin@foo.com"}
+	isEmailAdminHash := isEmailAdmin.Hash()
 
 	isAgeAdult := Condition{Name: "age", Value: "adult"}
 	isAgeAdultHash := isAgeAdult.Hash()
@@ -219,10 +219,8 @@ func main() {
 	isCitizenNL := Condition{Name: "citizen", Value: "NL"}
 	//isCitizenNLHash := isCitizenNL.Hash()
 
-
 	capriv := NewPrivKey()
 	//capub := capriv.PubKey()
-
 
 	alice := Certificate{
 		isAgeAdult:  isAgeAdult.Hash().Approve(capriv),
@@ -234,17 +232,17 @@ func main() {
 		isCitizenNL: isCitizenNL.Hash().Approve(capriv),
 	}
 
-  charles := Certificate{
+	charles := Certificate{
 		isAgeAdult:  isAgeAdult.Hash().Approve(capriv),
 		isCitizenUS: isCitizenUS.Hash().Approve(capriv),
 	}
 
-  dave := Certificate{
-    isEmailAdmin: isEmailAdmin.Hash().Approve(capriv),
-  }
+	dave := Certificate{
+		isEmailAdmin: isEmailAdmin.Hash().Approve(capriv),
+	}
 
 	// (and (has age adult) (or (has citizenship US) (has citizenship UK)))
-  policyPriv := NewPrivKey()
+	policyPriv := NewPrivKey()
 	policy := NewPolicy(
 		capriv,
 		policyPriv,
@@ -255,9 +253,9 @@ func main() {
 			PolicyCase{
 				Required: []ConditionHash{isAgeAdultHash, isCitizenUSHash},
 			},
-      PolicyCase{
-        Required: []ConditionHash{isEmailAdminHash},
-      },
+			PolicyCase{
+				Required: []ConditionHash{isEmailAdminHash},
+			},
 		},
 	)
 	_ = policyPriv
@@ -265,6 +263,6 @@ func main() {
 	log.Printf("expect: %s", policyPriv)
 	log.Printf("alice unlock: %s", UnlockPolicy(alice, policy))
 	log.Printf("bob unlock: %s", UnlockPolicy(bob, policy))
-  log.Printf("charles unlock: %s", UnlockPolicy(charles, policy))
-  log.Printf("dave unlock: %s", UnlockPolicy(dave, policy))
+	log.Printf("charles unlock: %s", UnlockPolicy(charles, policy))
+	log.Printf("dave unlock: %s", UnlockPolicy(dave, policy))
 }
